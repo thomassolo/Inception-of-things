@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/focal64"  # Ubuntu 20.04 LTS
-
+  config.vm.box = "ubuntu/focal64" # Ubuntu 20.04 LTS
+  
   # Machine Serveur (K3s Server)
   config.vm.define "tsoloherS" do |server|
     server.vm.hostname = "tsoloherS"
@@ -8,7 +8,11 @@ Vagrant.configure("2") do |config|
     server.vm.provider "virtualbox" do |vb|
       vb.memory = "512"
       vb.cpus = 1
+      vb.name = "tsoloherS"
     end
+    
+    # Installation K3s en mode server
+    server.vm.provision "shell", path: "scripts/install_k3s_server.sh"
   end
 
   # Machine Worker (K3s Agent)
@@ -18,6 +22,10 @@ Vagrant.configure("2") do |config|
     worker.vm.provider "virtualbox" do |vb|
       vb.memory = "512"
       vb.cpus = 1
+      vb.name = "tsoloherSW"
     end
+    
+    # Installation K3s en mode agent
+    worker.vm.provision "shell", path: "scripts/install_k3s_agent.sh"
   end
 end
