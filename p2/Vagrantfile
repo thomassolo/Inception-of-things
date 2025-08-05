@@ -1,0 +1,17 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64" # Ubuntu 20.04 LTS
+
+  ip_address = "192.168.56.110"
+
+  config.vm.define "tsoloherS", primary: true do |server|
+    server.vm.hostname = "tsoloherS"
+    server.vm.network "private_network", ip: ip_address
+    server.vm.provider "virtualbox" do |vb|
+      vb.memory = "1024"
+      vb.cpus = 1
+      vb.name = "tsoloherS"
+    end
+
+    # Installation K3s en mode server
+server.vm.provision "shell", path: "scripts/install_k3s_server.sh"
+end
