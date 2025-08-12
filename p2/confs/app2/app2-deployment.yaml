@@ -16,31 +16,14 @@ spec:
     spec:
       containers:
       - name: app2
-        image: nginx:alpine
+        image: nginx:latest
         ports:
         - containerPort: 80
         volumeMounts:
         - name: app2-html
-          mountPath: /usr/share/nginx/html
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
       volumes:
       - name: app2-html
         configMap:
           name: app2-html
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: app2-html
-data:
-  index.html: |
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>App 2</title>
-    </head>
-    <body>
-        <h1>Application 2 (3 replicas)</h1>
-        <p>Welcome to App2 - accessed via app2.com</p>
-        <p>Pod: {{ hostname }}</p>
-    </body>
-    </html>

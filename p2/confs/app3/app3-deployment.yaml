@@ -16,31 +16,14 @@ spec:
     spec:
       containers:
       - name: app3
-        image: nginx:alpine
+        image: nginx:latest
         ports:
         - containerPort: 80
         volumeMounts:
         - name: app3-html
-          mountPath: /usr/share/nginx/html
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
       volumes:
       - name: app3-html
         configMap:
           name: app3-html
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: app3-html
-data:
-  index.html: |
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>App 3 (Default)</title>
-    </head>
-    <body>
-        <h1>Application 3 - Default App</h1>
-        <p>Welcome to App3 - Default application</p>
-        <p>This is shown for any other hostname</p>
-    </body>
-    </html>

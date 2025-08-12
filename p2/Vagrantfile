@@ -13,6 +13,9 @@ Vagrant.configure("2") do |config|
     end
 
     # Installation K3s en mode server
-server.vm.provision "shell", path: "scripts/install_k3s_server.sh"
+    server.vm.provision "shell", path: "scripts/install_k3s_server.sh"
+    
+    # Deploy applications
+    server.vm.provision "shell", path: "scripts/Deploy.sh", privileged: false
 end
 end

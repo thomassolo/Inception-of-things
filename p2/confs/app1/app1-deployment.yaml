@@ -21,7 +21,7 @@ spec:
         - containerPort: 80
         volumeMounts:
         - name: app1-html
-          mountPath: /usr/share/nginx/index.html
+          mountPath: /usr/share/nginx/html/index.html
           subPath: index.html
       volumes:
       - name: app1-html
