@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app2-deployment
+  labels:
+    app: app2
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app2
+  template:
+    metadata:
+      labels:
+        app: app2
+    spec:
+      containers:
+      - name: app2
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: app2-html
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: app2-html
+        configMap:
+          name: app2-html
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app2-html
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>App 2</title>
+    </head>
+    <body>
+        <h1>Application 2 (3 replicas)</h1>
+        <p>Welcome to App2 - accessed via app2.com</p>
+        <p>Pod: {{ hostname }}</p>
+    </body>
+    </html>
