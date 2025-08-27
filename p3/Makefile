@@ -123,7 +123,7 @@ logs:
 # Start port forwarding
 port-forward:
 	@echo "🌐 Starting port forwarding..."
-	@echo "Argo CD UI will be available at: https://localhost:8081"
+	@echo "Argo CD UI will be available at: https://localhost:8080"
 	@echo "Application will be available at: http://localhost:8888"
 	@echo ""
 	@echo "Argo CD credentials:"
@@ -131,7 +131,7 @@ port-forward:
 	@echo "  Password: $$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' 2>/dev/null | base64 -d)"
 	@echo ""
 	@echo "Starting port forwarding (press Ctrl+C to stop)..."
-	@(kubectl port-forward svc/argocd-server -n argocd 8081:443 > /tmp/argocd-pf.log 2>&1 &)
+	@(kubectl port-forward svc/argocd-server -n argocd 8080:443 > /tmp/argocd-pf.log 2>&1 &)
 	@(kubectl port-forward -n dev svc/playground-service 8888:80 > /tmp/app-pf.log 2>&1 &)
 	@echo "Port forwarding started in background"
 	@echo "To test the app: curl http://localhost:8888/"
@@ -156,7 +156,7 @@ version-help:
 	@echo "📝 === VERSION CHANGE INSTRUCTIONS ==="
 	@echo ""
 	@echo "To test v1 → v2 transition:"
-	@echo "1. Go to GitHub repo: https://github.com/PageBlanc/axdubois-iot-deployement"
+	@echo "1. Go to GitHub repo: https://github.com/PageBlanc/axdubois-iot-deployment"
 	@echo "2. Edit the deployment file in manifests/"
 	@echo "3. Change: wil42/playground:v1 → wil42/playground:v2"
 	@echo "4. Commit and push changes"
@@ -204,7 +204,7 @@ demo: setup-all port-forward
 	@echo "✅ Port forwarding active"
 	@echo ""
 	@echo "🌐 Access URLs:"
-	@echo "  Argo CD: https://localhost:8081 (admin/password above)"
+	@echo "  Argo CD: https://localhost:8080 (admin/password above)"
 	@echo "  App API: http://localhost:8888/"
 	@echo ""
 	@echo "🧪 To test version change:"
