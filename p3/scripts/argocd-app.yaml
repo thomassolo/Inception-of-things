@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/PageBlanche/axdubois-iot-deployement'
+    repoURL: 'https://github.com/PageBlanc/axdubois-iot-deployement'
     targetRevision: HEAD
-    path: manifests
+    path: manifests  # Path to the manifests folder in the repo
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: dev
