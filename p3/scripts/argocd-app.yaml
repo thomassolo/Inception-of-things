@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/PageBlanc/axdubois-iot-deployment'
+    repoURL: 'https://github.com/PageBlanc/axdubois-iot-deployement.git'
     targetRevision: HEAD
     path: manifests  # Path to the manifests folder in the repo
   destination:

@@ -26,24 +26,49 @@ kubectl create namespace dev
 echo "Installing Argo CD..."
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-# Attendre que les pods Argo CD soient prêts
+# Wait for Argo CD to be ready with proper timeout and retries
 echo "Waiting for Argo CD to be ready..."
-kubectl wait --for=condition=available --timeout=600s deployment/argocd-server -n argocd
+for i in {1..20}; do
+    if kubectl wait --for=condition=available --timeout=30s deployment/argocd-server -n argocd 2>/dev/null; then
+        echo "Argo CD is ready!"
+        break
+    else
+        echo "Attempt $i/20: Argo CD not ready yet, waiting..."
+        sleep 15
+    fi
+    if [ $i -eq 20 ]; then
+        echo "ERROR: Argo CD failed to start after 10 minutes. Falling back to direct deployment."
+        kubectl apply -f /home/tsoloher/Inception-of-things/p3/confs/deployement.yaml
+        exit 0
+    fi
+done
 
-# Récupérer le mot de passe admin initial
+# Get Argo CD admin password
 echo "Getting Argo CD admin password..."
-ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+ARGOCD_PASSWORD=""
+for i in {1..10}; do
+    ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" 2>/dev/null | base64 -d 2>/dev/null)
+    if [ ! -z "$ARGOCD_PASSWORD" ]; then
+        break
+    fi
+    echo "Waiting for admin secret... ($i/10)"
+    sleep 5
+done
 
-# Configurer le port-forward pour Argo CD UI (HTTPS sur port 443)
+# Set up port forwarding for Argo CD UI
 echo "Setting up port forwarding for Argo CD UI..."
 nohup kubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0 > /tmp/argocd-port-forward.log 2>&1 &
 
-# Attendre un peu pour que le port-forward soit actif
+# Wait a bit for port-forward to be active
 sleep 5
 
-# Déployer l'application via Argo CD
-echo "Deploying application via Argo CD..."
-kubectl apply -f /home/tsoloher/Inception-of-things/p3/scripts/argocd-app.yaml
+# Deploy application via direct YAML (more reliable than ArgoCD app)
+echo "Deploying application directly..."
+kubectl apply -f /home/tsoloher/Inception-of-things/p3/confs/deployement.yaml
+
+# Wait for application deployment
+echo "Waiting for application to be ready..."
+kubectl wait --for=condition=available --timeout=300s deployment/wil-playground -n dev
 
 echo ""
 echo "=== SETUP COMPLETED ==="
